@@ -1,0 +1,17 @@
+# Рабочие файлы — в интернет не отправляем
+otchety/
+images/
+brand/
+assets/kandidaty/
+
+# Картинки, которые на сайте больше не используются
+assets/hero.webp
+assets/m-petrovich.webp
+assets/m-vitya.webp
+assets/m-mihalych.webp
+assets/m-stepan.webp
+
+# Служебные файлы компьютера
+Thumbs.db
+desktop.ini
+.DS_Store

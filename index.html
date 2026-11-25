@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Муж на час: электрика, сантехника, сборка мебели, замки</title>
+<meta name="description" content="Мастер по дому на час: розетки, краны, сборка мебели, замки, полки и люстры. Цену называем до начала работы, платите, когда всё работает.">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<!--
+  Заглушки, которые нужно заменить под настоящего клиента:
+  телефон +7 (900) 000-00-00 (ищите 79000000000), цена выезда, гарантия 6 месяцев, город.
+  Бренд: brand/brand.md. Промпты для картинок «было → стало»: brand/prompts-pary.md.
+-->
+<style>
+:root{
+  --milk:#FFFCF6; --cream:#F4E8CC; --mint:#F7EAD0; --sky:#F2E3D3; --peach:#FFE3CF; --lav:#FBE4DA; --butter:#FFF0C8; --blush:#FFEEE3; /* тёплая гамма с картинок: сливки, румянец, пыльно-голубой, масло, персик */
+  --sun:#FFC93C; --sun-dk:#F2B01E; --tomato:#E8553A;
+  --ink:#25283D; --ink-2:#5E6175; --navy:#2F4858; --navy-soft:#CFDADC; --line:#EADFC8; --white:#FFFFFF;
+  --wrap:1200px; --side:clamp(16px,5vw,48px);
+  --soft:0 12px 30px -14px rgba(37,40,61,.22);
+  --lift:0 22px 44px -16px rgba(37,40,61,.32);
+  --hand:"Caveat",cursive;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{background:var(--milk);color:var(--ink);font:400 18px/1.6 "Rubik",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+h1,h2,h3{font-family:"Rubik",sans-serif;font-weight:700;letter-spacing:-.015em;line-height:1.08;text-wrap:balance}
+h2{font-size:clamp(30px,3.8vw,48px);color:var(--navy)}
+h3{font-size:clamp(20px,1.8vw,23px);font-weight:500;letter-spacing:-.005em}
+p{text-wrap:pretty}
+:focus-visible{outline:3px solid var(--tomato);outline-offset:3px;border-radius:8px}
+.wrap{max-width:var(--wrap);margin-inline:auto;padding-inline:var(--side)}
+.hand{font-family:var(--hand);font-weight:700;color:var(--tomato);line-height:1}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+section{padding-block:clamp(64px,9vw,120px)}
+
+/* кнопки */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 26px;border-radius:999px;
+  font:500 18px/1 "Rubik",sans-serif;text-decoration:none;border:2px solid transparent;cursor:pointer;
+  transition:transform .18s ease, background-color .18s ease, box-shadow .18s ease}
+.btn svg{flex:none;width:20px;height:20px}
+.btn--sun{background:var(--sun);color:var(--ink);box-shadow:0 8px 20px -10px rgba(242,176,30,.9)}
+.btn--sun:hover{background:var(--sun-dk);transform:translateY(-2px)}
+.btn--line{border-color:var(--ink);color:var(--ink);background:transparent}
+.btn--line:hover{background:var(--ink);color:var(--milk);transform:translateY(-2px)}
+.btn--white{background:var(--white);color:var(--ink);box-shadow:var(--soft)}
+.btn--white:hover{transform:translateY(-2px);box-shadow:var(--lift)}
+.btn:active{transform:scale(.97)}
+
+/* ШАПКА */
+.top{position:sticky;top:0;z-index:40;background:rgba(255,252,246,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:box-shadow .2s}
+.top.scrolled{box-shadow:0 1px 0 var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;height:68px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:700;font-size:22px;letter-spacing:-.02em;white-space:nowrap}
+.brand img{width:40px;height:40px}
+.nav{display:flex;align-items:center;gap:10px}
+.nav a:not(.btn){display:inline-flex;align-items:center;min-height:44px;padding:10px 18px;border-radius:999px;text-decoration:none;font-weight:500;font-size:16px;
+  color:var(--navy);background:var(--white);border:2px solid var(--navy-soft);box-shadow:0 4px 0 var(--navy-soft);transition:transform .15s, box-shadow .15s, background-color .15s}
+.nav a:not(.btn):hover{background:var(--sky);transform:translateY(-2px);box-shadow:0 6px 0 var(--navy-soft)}
+.nav a:not(.btn):active{transform:translateY(3px);box-shadow:0 1px 0 var(--navy-soft)}
+.nav .btn{min-height:44px;padding:10px 20px;font-size:16px}
+
+/* ПЕРВЫЙ ЭКРАН */
+.hero{padding-block:clamp(32px,5vw,72px) clamp(56px,7vw,96px)}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,4vw,64px);align-items:center}
+.hero h1{font-size:clamp(40px,5.6vw,74px);line-height:1.02}
+.hero h1 .q{display:block;color:var(--ink-2);font-weight:500;font-size:.62em;letter-spacing:-.01em;line-height:1.2}
+.hero h1 .rot{display:inline-block}
+.hero h1 .a{display:block;margin-top:.18em}
+.hero h1 .a{color:var(--navy)}
+.hero h1 .name{color:var(--tomato);text-shadow:-1px -1px 0 rgba(255,255,255,.9),1px 1px 0 var(--navy),2px 2px 0 var(--navy),3px 3px 0 var(--navy),4px 4px 0 var(--navy),5px 5px 0 #253B48,7px 9px 14px rgba(23,38,55,.3)}
+.hero .lead{margin-top:24px;font-size:clamp(18px,1.6vw,21px);color:var(--ink-2);max-width:31em}
+.hero .lead b{color:var(--ink);font-weight:500}
+.actions{display:flex;flex-wrap:wrap;gap:14px}
+.how .actions{margin-top:44px}
+.promises{margin-top:32px;list-style:none;display:flex;flex-wrap:wrap;gap:10px 22px;font-size:15px;color:var(--ink-2)}
+.promises li{display:flex;align-items:center;gap:8px}
+.promises svg{flex:none;width:28px;height:28px;padding:6px;border-radius:50%;background:var(--mint);color:var(--ink)}
+.hero-art{position:relative;justify-self:center;width:min(100%,500px)}
+.hero-art .disc{aspect-ratio:1;border-radius:50%;overflow:hidden;background:var(--cream);box-shadow:var(--soft)}
+.hero-art .disc img{width:100%;height:100%;object-fit:cover}
+.hero-art .note{position:absolute;left:-26%;top:-6%;width:44%;font-size:clamp(24px,2.4vw,32px);transform:rotate(-6deg)}
+.hero-art .note svg{display:block;width:70%;margin:6px 0 0 30%;color:var(--tomato)}
+.hero-art .badge{position:absolute;right:2%;bottom:6%;background:var(--white);border-radius:20px;padding:12px 16px;box-shadow:var(--lift);font-size:15px;line-height:1.3;transform:rotate(3deg)}
+.hero-art .badge b{display:block;font-size:18px;font-weight:700}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#3BB273;margin-right:6px;vertical-align:1px;box-shadow:0 0 0 0 rgba(59,178,115,.5)}
+
+/* ЛЕНТА «БЫЛО → СТАЛО» */
+.ribbon-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.ribbon-head p{margin-top:12px;color:var(--ink-2);max-width:34em}
+.ribbon-head .hand{font-size:30px;display:inline-block;transform:rotate(-3deg);margin-left:8px;vertical-align:middle}
+.arrows{display:flex;gap:10px}
+.arrows button{width:56px;height:56px;border-radius:50%;border:0;background:var(--sun);box-shadow:var(--soft);cursor:pointer;display:grid;place-items:center;color:var(--ink);transition:transform .18s, opacity .18s}
+.arrows button:hover{transform:translateY(-2px)}
+.arrows button:disabled{opacity:.35;cursor:default;transform:none}
+.arrows svg{width:22px;height:22px}
+.ribbon{width:min(calc(100% - 2 * var(--side) + 16px), calc(var(--wrap) - 2 * var(--side) + 16px));margin:40px auto 0;display:flex;gap:28px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+  padding:22px 8px 30px;scroll-padding-inline:8px}
+.ribbon::-webkit-scrollbar{display:none}
+/* ровно 3 карточки на экране компьютера, 2 на планшете, 1 на телефоне — без половинок */
+.pair{flex:0 0 calc((100% - 56px) / 3);scroll-snap-align:start;display:flex;flex-direction:column}
+@media (max-width:980px){ .pair{flex-basis:calc((100% - 28px) / 2)} }
+.shot{position:relative;border-radius:26px;background:var(--cream);box-shadow:var(--soft);transition:transform .25s ease, box-shadow .25s ease}
+.pair:nth-child(4n+1) .shot{transform:rotate(-1.4deg)}
+.pair:nth-child(4n+2) .shot{transform:rotate(1deg)}
+.pair:nth-child(4n+3) .shot{transform:rotate(-.7deg)}
+.pair:nth-child(4n+4) .shot{transform:rotate(1.3deg)}
+.pair:hover .shot{transform:rotate(0) translateY(-6px);box-shadow:var(--lift)}
+.shot .frame{border-radius:26px;overflow:hidden;position:relative;aspect-ratio:1}
+.shot img{width:100%;height:100%;object-fit:cover}
+.shot .after{position:absolute;inset:0;clip-path:inset(0 100% 0 0);transition:clip-path .8s cubic-bezier(.65,0,.35,1)}
+.shot .shine{position:absolute;top:0;bottom:0;width:60px;left:-60px;pointer-events:none;opacity:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent)}
+.pair.is-after .after{clip-path:inset(0 0 0 0)}
+.pair.is-after .shine{animation:shine .8s cubic-bezier(.65,0,.35,1)}
+@keyframes shine{0%{left:-60px;opacity:1}100%{left:100%;opacity:1}}
+.sticker{position:absolute;top:-12px;right:14px;z-index:2;max-width:78%;background:var(--tomato);color:var(--white);
+  font:700 23px/1.05 var(--hand);padding:7px 13px 8px;border-radius:14px;transform:rotate(4deg);box-shadow:0 8px 16px -10px rgba(0,0,0,.4)}
+.toggle{position:absolute;left:14px;bottom:14px;z-index:2;display:none;background:rgba(255,255,255,.94);border-radius:999px;padding:4px;box-shadow:var(--soft)}
+.toggle button{border:0;background:none;border-radius:999px;padding:8px 14px;min-height:36px;font:500 14px/1 "Rubik",sans-serif;color:var(--ink-2);cursor:pointer}
+.pair:not(.is-after) .toggle [data-v="before"], .pair.is-after .toggle [data-v="after"]{background:var(--sun);color:var(--ink)}
+.has-after .toggle{display:flex}
+.thumb{position:absolute;right:12px;bottom:12px;z-index:2;width:64px;height:64px;border-radius:12px;border:3px solid var(--white);overflow:hidden;transform:rotate(-6deg) scale(.6);opacity:0;transition:.3s .5s;box-shadow:var(--soft)}
+.pair.is-after .thumb{opacity:1;transform:rotate(-6deg) scale(1)}
+.pair .txt{padding:22px 4px 0;display:flex;flex-direction:column;flex:1}
+.pair .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.pair .price{font-weight:700;font-size:20px;color:var(--tomato);white-space:nowrap;font-variant-numeric:tabular-nums}
+.pair p{margin-top:4px;font-size:16px;color:var(--ink-2);line-height:1.45}
+.pair .go{margin-top:12px;font-weight:500;font-size:16px;text-decoration-color:var(--sun);text-decoration-thickness:3px;text-underline-offset:5px}
+.pair .go:hover{text-decoration-color:var(--tomato)}
+.count{display:none;margin-top:4px;text-align:center;color:var(--ink-2);font-size:15px}
+.more{margin-top:28px;background:var(--cream);border-radius:22px;padding:22px 28px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 14px}
+.more>span{font-weight:500;margin-right:4px}
+.more ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+.more li{background:var(--white);border-radius:999px;padding:6px 14px;font-size:15px}
+.more a{margin-left:auto;font-weight:500;font-size:16px;text-decoration-color:var(--sun);text-decoration-thickness:3px;text-underline-offset:5px}
+
+/* ОСТРОВА */
+.island{max-width:1296px;margin-inline:auto;border-radius:40px}
+.island--mint{background:var(--mint)}
+.island--sky{background:var(--sky)}
+.island--peach{background:var(--peach)}
+.island--lav{background:var(--lav)}
+.island--butter{background:var(--butter)}
+.island--blush{background:var(--blush)}
+.hero.island{margin-top:8px}
+
+/* КОТ-ЧАСЫ «ПОЗВОНИ»: бежит по краю экрана сверху вниз вместе с прокруткой */
+.catcall{position:fixed;right:clamp(10px,2vw,28px);top:0;z-index:45;width:112px;height:120px;display:block;text-decoration:none;
+  transform:translateY(var(--y,96px));transition:transform .7s cubic-bezier(.3,1.4,.5,1);filter:drop-shadow(0 10px 14px rgba(47,72,88,.3))}
+.catcall svg{width:100%;height:100%;display:block;overflow:visible;transform-origin:50% 90%}
+.catcall.run svg{animation:catrun .35s ease-in-out infinite alternate}
+.catcall.ring svg{animation:catring .9s ease-in-out}
+.catcall:hover svg{animation:catring .9s ease-in-out infinite}
+.catcall:focus-visible{outline-offset:6px;border-radius:50%}
+@keyframes catrun{from{transform:rotate(-7deg) translateY(0)}to{transform:rotate(7deg) translateY(-6px)}}
+@keyframes catring{0%,100%{transform:rotate(0)}15%{transform:rotate(-10deg)}30%{transform:rotate(9deg)}45%{transform:rotate(-7deg)}60%{transform:rotate(5deg)}75%{transform:rotate(-2deg)}}
+@media (max-width:1280px){.catcall{width:92px;height:99px}}
+@media (max-width:640px){.catcall{display:none}}
+@media (prefers-reduced-motion:reduce){.catcall{transition:none}.catcall svg{animation:none!important}}
+.island + .island{margin-top:16px}
+
+/* КАК ЭТО ПРОИСХОДИТ */
+.how .sub{margin-top:12px;color:var(--ink-2)}
+.steps{list-style:none;margin-top:48px;display:grid;grid-template-columns:repeat(4,1fr);gap:28px;position:relative}
+.steps::before{content:"";position:absolute;left:28px;right:12%;top:27px;border-top:3px dotted rgba(37,40,61,.3)}
+.steps li{position:relative}
+.steps .n{width:56px;height:56px;border-radius:50%;background:var(--white);box-shadow:var(--soft);display:grid;place-items:center;font-weight:700;font-size:23px;color:var(--tomato);position:relative}
+.steps h3{margin-top:22px}
+.steps p{margin-top:8px;font-size:17px;color:var(--ink-2)}
+.steps .hand{display:inline-block;margin-top:10px;font-size:26px;transform:rotate(-3deg)}
+
+/* ЦЕНЫ: ЧЕК */
+.prices .wrap{max-width:820px;text-align:center}
+.prices h2{font-size:clamp(28px,3.4vw,42px)}
+.prices .side p{margin:16px auto 0;color:var(--ink-2);max-width:34em}
+.prices .side .hand{display:block;margin:28px auto 0;font-size:30px;transform:rotate(-2deg);max-width:16em}
+.price-btn{margin:30px auto 18px;min-height:60px;padding:16px 34px;font-size:19px}
+.price-btn svg{width:22px;height:22px}
+.price-btn[aria-expanded="true"]{background:var(--white);border-color:var(--sun-dk);box-shadow:var(--soft)}
+.price-box{margin-top:44px;text-align:left}
+.price-box:not([hidden]){animation:priceIn .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes priceIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+.receipt{position:relative;background:var(--white);padding:36px clamp(22px,3.5vw,44px) 40px;filter:drop-shadow(0 14px 24px rgba(37,40,61,.14));margin-block:12px}
+.receipt::before,.receipt::after{content:"";position:absolute;left:0;right:0;height:12px;background:radial-gradient(circle at 8px 12px,var(--white) 8px,transparent 8.5px) 0 0/16px 12px repeat-x}
+.receipt::before{top:-12px}
+.receipt::after{bottom:-12px;transform:scaleY(-1)}
+.receipt h3{margin-top:22px;font-size:15px;font-weight:500;color:var(--ink-2)}
+.receipt h3:first-child{margin-top:0}
+.receipt ul{list-style:none}
+.receipt li{display:flex;align-items:baseline;gap:8px;padding:8px 0;font-size:17px}
+.receipt li span{flex:none;max-width:72%}
+.receipt li i{flex:1;border-bottom:2px dotted var(--line);transform:translateY(-4px)}
+.receipt li b{flex:none;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.receipt .total{margin-top:24px;padding-top:20px;border-top:2px dashed var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px}
+.receipt .total .hand{font-size:27px}
+
+/* СПИСОК «КОГДА-НИБУДЬ» */
+.list .wrap{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,88px);align-items:center}
+.list .intro p{margin-top:16px;color:var(--ink-2);max-width:28em}
+.list .intro .btn{margin-top:28px}
+.memo{position:relative;background:#FFFDF2;padding:44px 36px 34px;border-radius:6px;box-shadow:var(--lift);transform:rotate(1.6deg);max-width:480px;justify-self:center;width:100%}
+.memo::before{content:"";position:absolute;top:-14px;left:50%;width:34px;height:34px;margin-left:-17px;border-radius:50%;background:var(--tomato);box-shadow:inset -4px -4px 0 rgba(0,0,0,.15),0 6px 10px -4px rgba(0,0,0,.35)}
+.memo h3{font-family:var(--hand);font-size:32px;color:var(--ink);font-weight:700;letter-spacing:0}
+.memo ul{list-style:none;margin-top:6px}
+.memo li{display:flex;gap:12px;align-items:flex-start;font-family:var(--hand);font-size:25px;line-height:1.2;padding:7px 0;color:var(--ink);border-bottom:1px solid #E3ECF5}
+.memo li::before{content:"";flex:none;margin-top:5px;width:18px;height:18px;border:2px solid var(--ink);border-radius:4px;background:no-repeat center/14px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 8.5l4 4L14 3' fill='none' stroke='%23E8553A' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+.memo li.no{color:var(--ink-2)}
+.memo li.no::before{background-image:none}
+.memo li small{font-size:.75em}
+.list .guar{margin-top:clamp(48px,6vw,72px);display:grid;grid-template-columns:repeat(4,1fr);gap:24px;align-items:stretch}
+.guar div{background:var(--white);border-radius:22px;padding:22px 22px 24px}
+.guar b{display:block;font-weight:500;font-size:18px}
+.guar p{margin-top:6px;font-size:15px;color:var(--ink-2);line-height:1.5}
+
+/* ВОПРОСЫ */
+.faq .wrap{max-width:860px}
+.faq-head{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.faq-head .hand{font-size:28px;transform:rotate(-4deg)}
+.qa{margin-top:36px;display:grid;gap:12px}
+.qa details{background:var(--white);border:0;border-left:6px solid var(--sun);border-radius:20px;padding:0 24px 0 26px;box-shadow:0 6px 18px -10px rgba(37,40,61,.25);transition:box-shadow .2s, transform .2s}
+.qa details:hover{transform:translateY(-2px);box-shadow:var(--soft)}
+.qa details[open]{border-left-color:var(--tomato)}
+.qa details[open]{box-shadow:var(--soft)}
+.qa summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:18px;padding:22px 0;color:var(--navy);font-weight:500;font-size:clamp(18px,1.7vw,20px)}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"";flex:none;width:36px;height:36px;border-radius:50%;background:var(--navy) no-repeat center/16px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 2v12M2 8h12' stroke='%23FFFFFF' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");transition:transform .25s}
+.qa details[open] summary::after{transform:rotate(45deg)}
+.qa details p{padding:0 0 22px;color:var(--ink-2);max-width:40em}
+
+/* ФИНАЛ */
+.final .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:clamp(28px,5vw,64px);align-items:center}
+.final .sub{margin-top:14px;color:var(--ink-2);max-width:28em}
+.final .phone{display:inline-block;margin-top:28px;font-weight:700;font-size:clamp(30px,4vw,48px);letter-spacing:-.02em;text-decoration:none;
+  background:linear-gradient(transparent 62%,var(--sun) 62%,var(--sun) 92%,transparent 92%)}
+.final .alt{margin-top:24px;display:flex;flex-wrap:wrap;gap:12px}
+.final small{display:block;margin-top:20px;font-size:15px;color:var(--ink-2)}
+.final figure{justify-self:center;width:min(100%,360px);position:relative}
+.final figure img{border-radius:50%;aspect-ratio:1;object-fit:cover;background:var(--cream);box-shadow:var(--soft)}
+.final figcaption{position:absolute;left:-10%;bottom:-4%;font-size:28px;transform:rotate(-5deg);background:var(--white);padding:8px 16px 10px;border-radius:16px;box-shadow:var(--soft)}
+
+/* ПОДВАЛ */
+footer{padding-block:40px 48px;border-top:1px solid var(--line);margin-top:clamp(48px,7vw,96px)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px 32px;font-size:15px;color:var(--ink-2)}
+footer .brand{color:var(--ink)}
+footer .hand{font-size:24px}
+footer a{text-decoration:none}
+footer .maker{display:inline-flex;align-items:center;gap:10px;font-size:14px;color:var(--ink-2);transition:transform .2s}
+footer .maker img{width:40px;height:40px;border-radius:10px;box-shadow:0 4px 10px -4px rgba(15,107,92,.5)}
+footer .maker b{color:#0F6B5C;font-weight:700}
+footer .maker:hover{transform:translateY(-2px)}
+footer .maker:hover b{text-decoration:underline;text-decoration-color:#F5B82E;text-decoration-thickness:2px;text-underline-offset:4px}
+
+/* ПАНЕЛЬ НА ТЕЛЕФОНЕ */
+.dock{display:none}
+
+/* ДВИЖЕНИЕ: один оркестрованный вход первого экрана */
+@media (prefers-reduced-motion:no-preference){
+  .hero h1,.hero .lead,.promises{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+  .hero .lead{animation-delay:.08s}.promises{animation-delay:.16s}
+  .hero-art .disc{animation:pop .7s cubic-bezier(.34,1.56,.64,1) .1s both}
+  .hero-art .note{animation:rise .5s ease .6s both}
+  .hero-art .badge{animation:rise .5s ease .75s both}
+  .hero h1 .rot.swap{animation:flip .45s cubic-bezier(.2,.8,.2,1)}
+  .dot{animation:pulse 2s infinite}
+}
+@media (prefers-reduced-motion:reduce){
+  .shot .after{transition:none}
+  html{scroll-behavior:auto}
+}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@keyframes flip{from{opacity:0;transform:translateY(.4em)}to{opacity:1;transform:none}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(59,178,115,.5)}70%{box-shadow:0 0 0 9px rgba(59,178,115,0)}100%{box-shadow:0 0 0 0 rgba(59,178,115,0)}}
+.hero-art .note{--r:-6deg}
+
+/* ПЛАНШЕТ И ТЕЛЕФОН */
+@media (max-width:1180px){
+  .nav a:not(.btn){padding:8px 13px;font-size:15px}
+}
+@media (max-width:980px){
+  .nav a:not(.btn){display:none}
+  .hero .wrap{grid-template-columns:1fr}
+  .hero-art{width:min(100%,380px);order:-1;margin-bottom:8px}
+  .hero-art .note{left:auto;right:-4%;top:-2%;width:40%;text-align:right}
+  .hero-art .note svg{display:none}
+  .list .wrap,.final .wrap{grid-template-columns:1fr}
+  .list .guar{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:1fr 1fr;row-gap:40px}
+  .steps::before{display:none}
+  .island{margin-inline:8px;border-radius:30px}
+  .final figure{width:min(70%,280px);order:-1}
+}
+@media (max-width:640px){
+  body{font-size:17px;padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+  .top .wrap{height:60px}
+  .brand{font-size:20px}
+  .brand img{width:36px;height:36px}
+  .nav .btn{width:44px;height:44px;min-height:0;padding:0}
+  .nav .btn span{display:none}
+  .hero{padding-top:20px}
+  .hero-art{width:min(78%,300px)}
+  .hero-art .badge{right:-6%;font-size:13px;padding:10px 12px}
+  .hero-art .badge b{font-size:16px}
+  .how .actions .btn{flex:1 1 100%}
+  .arrows{display:none}
+  .pair{flex-basis:100%}
+  .pair:nth-child(n) .shot{transform:none}
+  .sticker{font-size:21px}
+  .count{display:block}
+  .more{padding:20px}
+  .more a{margin-left:0}
+  .steps{grid-template-columns:1fr;row-gap:0}
+  .steps li{display:grid;grid-template-columns:56px 1fr;column-gap:18px;padding-bottom:28px;position:relative}
+  .steps li:not(:last-child)::after{content:"";position:absolute;left:27px;top:62px;bottom:6px;border-left:3px dotted rgba(37,40,61,.3)}
+  .steps .n{grid-row:span 3}
+  .steps h3{margin-top:14px}
+  .steps p,.steps .hand{grid-column:2}
+  .list .guar{grid-template-columns:1fr;gap:12px}
+  .memo{padding:40px 22px 28px}
+  .memo li{font-size:23px}
+  .receipt li{font-size:16px}
+  .receipt li span{max-width:66%}
+  .final .alt .btn{flex:1 1 100%}
+  .dock{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;gap:10px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+    background:rgba(255,252,246,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 -1px 0 var(--line)}
+  .dock .btn{flex:1;min-height:52px;padding:12px;font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#" aria-label="Муж на час, наверх страницы">
+      <img src="assets/logo.svg" alt="" width="40" height="40">Муж на час
+    </a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="#chto">Что чиним</a>
+      <a href="#kak">Как работаем</a>
+      <a href="#ceny">Цены</a>
+      <a href="#voprosy">Вопросы</a>
+      <a class="btn btn--sun" href="tel:+79000000000" aria-label="Позвонить: +7 (900) 000-00-00">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>
+        <span>+7 (900) 000-00-00</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="hero island island--blush">
+  <div class="wrap">
+    <div>
+      <h1>
+        <span class="q"><span class="rot" id="rot">Кран течёт?</span></span>
+        <span class="q">Кот в панике?</span>
+        <span class="a"><span class="name">Муж на час</span> уже едет.</span>
+      </h1>
+      <p class="lead">Электрика, сантехника, сборка мебели, замки и та самая полка, которая третий месяц стоит у стены. <b>Цену называем до начала работы, платите, когда всё работает.</b></p>
+      <ul class="promises">
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8"/></svg>Цена до начала работы</li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8"/></svg>Оплата после, с чеком</li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8"/></svg>Гарантия 6 месяцев</li>
+      </ul>
+    </div>
+
+    <div class="hero-art">
+      <div class="disc"><img src="assets/hero-kot.webp" alt="Рыжий кот сидит у запертой двери и растерянно смотрит вверх" width="720" height="720" fetchpriority="high"></div>
+      <p class="note hand" aria-hidden="true">Это кот. Он ждёт мастера
+        <svg viewBox="0 0 120 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8c30 4 64 14 88 38"/><path d="M80 44l15 4-3-15"/></svg>
+      </p>
+      <div class="badge"><span class="dot"></span>Сегодня мастера свободны<b>Приедем за 1–2 часа</b></div>
+    </div>
+  </div>
+</section>
+
+<section class="services" id="chto" aria-labelledby="chto-h">
+  <div class="wrap ribbon-head">
+    <div>
+      <h2 id="chto-h">Кот нервничает, если…<span class="hand" aria-hidden="true">он подтвердит</span></h2>
+      <p>Самое частое. Но зовут нас и по мелочам: повесить карниз, собрать шкаф, поменять лампочку там, куда не достать.</p>
+    </div>
+    <div class="arrows">
+      <button type="button" data-dir="-1" aria-label="Листать назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button type="button" data-dir="1" aria-label="Листать вперёд"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+  </div>
+
+  <!--
+    Лента «Было → Стало». Чтобы пара заработала, добавьте внутрь .frame вторую картинку:
+      <img class="after" src="assets/svc-kran-after.webp" alt="..." width="900" height="900" loading="lazy">
+    Переключатель «Было | Стало», протирка и маленькое фото «было» в углу включатся сами.
+    Новые пары (полка, торшер, шкаф, карниз) — скопируйте любую карточку и поменяйте картинку и тексты.
+  -->
+  <div class="ribbon" id="ribbon">
+    <article class="pair">
+      <div class="shot">
+        <span class="sticker">Уточка не виновата</span>
+        <div class="frame">
+          <img class="before" src="assets/svc-kran.webp" alt="Кран бьёт фонтаном, мокрый взъерошенный кот и резиновая уточка в луже" width="900" height="900" loading="lazy">
+          <img class="after" src="assets/svc-kran-after.webp" alt="Кран починен, пушистый кот в красном платке сидит на краю мойки с уточкой на голове" width="900" height="900" loading="lazy">
+        </div>
+      </div>
+      <div class="txt">
+        <div class="row"><h3>Кран плачет</h3><span class="price">от 500 ₽</span></div>
+        <p>Смесители, прокладки, протечки. Утешим кран, кота высушите сами.</p>
+        <a class="go" href="tel:+79000000000">Вызвать мастера</a>
+      </div>
+    </article>
+
+    <article class="pair">
+      <div class="shot">
+        <span class="sticker">Не геройствуйте, мы приедем</span>
+        <div class="frame">
+          <img class="before" src="assets/svc-electro.webp" alt="Розетка мечет красную молнию, рядом испуганный кот" width="900" height="900" loading="lazy">
+          <img class="after" src="assets/svc-electro-after.webp" alt="Новая розетка, светит лампа, кот в красном платке спит в круге тёплого света" width="900" height="900" loading="lazy">
+        </div>
+      </div>
+      <div class="txt">
+        <div class="row"><h3>Розетка искрит</h3><span class="price">от 600 ₽</span></div>
+        <p>Розетки, выключатели, люстры, проводка. Не трогайте её и кота не пускайте.</p>
+        <a class="go" href="tel:+79000000000">Вызвать мастера</a>
+      </div>
+    </article>
+
+    <article class="pair">
+      <div class="shot">
+        <span class="sticker">Побег отменяется</span>
+        <div class="frame">
+          <img class="before" src="assets/svc-tehnika.webp" alt="Стиральная машина на ножках убегает, разбрасывая носки и пену, кот шарахается в сторону" width="900" height="900" loading="lazy">
+          <img class="after" src="assets/svc-tehnika-after.webp" alt="Стиралка стоит на месте, носки сохнут парами, кот спит на машинке" width="900" height="900" loading="lazy">
+        </div>
+      </div>
+      <div class="txt">
+        <div class="row"><h3>Стиралка сбежала</h3><span class="price">от 1 000 ₽</span></div>
+        <p>Стиральные, сушильные, посудомоечные. Поймаем, подключим, поставим ровно.</p>
+        <a class="go" href="tel:+79000000000">Вызвать мастера</a>
+      </div>
+    </article>
+
+    <article class="pair">
+      <div class="shot">
+        <span class="sticker">Ключ сломался, мы нет</span>
+        <div class="frame">
+          <img class="before" src="assets/svc-zamok.webp" alt="Запертая дверь, на коврике сломанный ключ, рядом растерянный рыжий кот" width="900" height="900" loading="lazy">
+          <img class="after" src="assets/svc-zamok-after.webp" alt="Дверь с новым замком приоткрыта, тапочки и кофе, кот в красном платке на пороге" width="900" height="900" loading="lazy">
+        </div>
+      </div>
+      <div class="txt">
+        <div class="row"><h3>Замок заупрямился</h3><span class="price">от 1 200 ₽</span></div>
+        <p>Вскрытие и замена замков. Договоримся с ним без лома и криков.</p>
+        <a class="go" href="tel:+79000000000">Вызвать мастера</a>
+      </div>
+    </article>
+
+    <article class="pair">
+      <div class="shot">
+        <span class="sticker">Кот держит. Но недолго</span>
+        <div class="frame">
+          <img class="before" src="assets/svc-polka.webp" alt="Полка висит на одном шурупе, пушистый рыжий кот держит её лапами, книга улетает" width="900" height="900" loading="lazy">
+          <img class="after" src="assets/svc-polka-after.webp" alt="Полка ровно висит на двух кронштейнах, книги стоят рядом с кактусом, довольный кот в красном платке" width="900" height="900" loading="lazy">
+        </div>
+      </div>
+      <div class="txt">
+        <div class="row"><h3>Полка повисла</h3><span class="price">от 500 ₽</span></div>
+        <p>Полки, зеркала, картины, телевизоры. Повесим ровно, по уровню, и кот уйдёт со смены.</p>
+        <a class="go" href="tel:+79000000000">Вызвать мастера</a>
+      </div>
+    </article>
+
+    <article class="pair">
+      <div class="shot">
+        <span class="sticker">Осталось 12 лишних шурупов</span>
+        <div class="frame">
+          <img class="before" src="assets/svc-shkaf.webp" alt="Комната в коробках и досках, сердитый пушистый кот сидит в коробке с инструкцией на голове" width="900" height="900" loading="lazy">
+          <img class="after" src="assets/svc-shkaf-after.webp" alt="Собранный шкаф, на нём коробка и довольный рыжий кот" width="900" height="900" loading="lazy">
+        </div>
+      </div>
+      <div class="txt">
+        <div class="row"><h3>Шкаф не собирается</h3><span class="price">от 1 000 ₽</span></div>
+        <p>Соберём шкаф, кровать, кухню. Без лишних шурупов. Коробку оставим коту.</p>
+        <a class="go" href="tel:+79000000000">Вызвать мастера</a>
+      </div>
+    </article>
+
+    <article class="pair">
+      <div class="shot">
+        <span class="sticker">Торшер просит больничный</span>
+        <div class="frame">
+          <img class="before" src="assets/svc-torsher.webp" alt="Кривой торшер на изоленте, под ножкой книга и спички, лампа мигает, сердитый пушистый кот в кресле" width="900" height="900" loading="lazy">
+          <img class="after" src="assets/svc-torsher-after.webp" alt="Торшер стоит ровно и светит, кот в красном платке спит в кресле рядом с книгой" width="900" height="900" loading="lazy">
+        </div>
+      </div>
+      <div class="txt">
+        <div class="row"><h3>Торшер хромает</h3><span class="price">от 800 ₽</span></div>
+        <p>Торшеры, люстры, бра, светильники. Вылечим, подключим, и свет перестанет мигать.</p>
+        <a class="go" href="tel:+79000000000">Вызвать мастера</a>
+      </div>
+    </article>
+
+    <article class="pair">
+      <div class="shot">
+        <span class="sticker">Кот играет в привидение. Не по своей воле</span>
+        <div class="frame">
+          <img class="before" src="assets/svc-karniz.webp" alt="Карниз сорвался, кольца летят, кот запутался в упавшей шторе в горошек" width="900" height="900" loading="lazy">
+          <img class="after" src="assets/svc-karniz-after.webp" alt="Карниз висит ровно, штора подвязана бантом, кот в красном платке греется на солнце" width="900" height="900" loading="lazy">
+        </div>
+      </div>
+      <div class="txt">
+        <div class="row"><h3>Карниз сорвался</h3><span class="price">от 800 ₽</span></div>
+        <p>Карнизы, шторы, жалюзи, рулонки. Повесим крепко, чтобы кот больше не изображал привидение.</p>
+        <a class="go" href="tel:+79000000000">Вызвать мастера</a>
+      </div>
+    </article>
+  </div>
+  <p class="count" id="count" aria-hidden="true">1 / 8</p>
+
+  <div class="wrap">
+    <div class="more">
+      <span>Ещё чиним и вешаем:</span>
+      <ul>
+        <li>полки</li><li>картины и зеркала</li><li>карнизы</li><li>телевизоры</li><li>люстры</li><li>сборка мебели</li><li>двери</li>
+      </ul>
+      <a href="#ceny">Все цены</a>
+    </div>
+  </div>
+</section>
+
+<section class="how island island--mint" id="kak">
+  <div class="wrap">
+    <h2>Как мы работаем</h2>
+    <p class="sub">Четыре шага, никакой бюрократии.</p>
+    <ol class="steps">
+      <li><span class="n">1</span><h3>Вы звоните или пишете</h3><p>Расскажите, что случилось. Фото в мессенджер скажет мастеру больше, чем «ну там что-то капает».</p></li>
+      <li><span class="n">2</span><h3>Называем цену</h3><p>До начала работы и без сюрпризов. Сюрпризы оставим для дня рождения.</p></li>
+      <li><span class="n">3</span><h3>Мастер чинит</h3><p>Приходит в оговорённое время, в бахилах, со своим инструментом. Уходит вместе с мусором.</p></li>
+      <li><span class="n">4</span><h3>Вы проверяете и платите</h3><p>Только когда всё работает. Картой, наличными или переводом, чек выдаём.</p><span class="hand">и выдыхаете</span></li>
+    </ol>
+    <div class="actions">
+      <a class="btn btn--sun" href="tel:+79000000000" title="Звонок бесплатный, кот одобряет">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>
+        Вызвать мастера
+      </a>
+      <a class="btn btn--line" href="https://wa.me/79000000000?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A3%20%D0%BC%D0%B5%D0%BD%D1%8F%20%D1%81%D0%BB%D0%BE%D0%BC%D0%B0%D0%BB%D0%BE%D1%81%D1%8C%3A%20" target="_blank" rel="noopener" title="Можно прямо с фото поломки">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2c0 1.3.9 2.5 1.1 2.7.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>
+        Написать в WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="prices island island--lav" id="ceny">
+  <div class="wrap">
+    <div class="side">
+      <h2>Стоимость работы можно проверить по прайсу</h2>
+      <button type="button" class="btn btn--sun price-btn" id="price-btn" aria-expanded="false" aria-controls="price">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>
+        <span>Открыть прайс</span>
+      </button>
+      <p>Цену называем до начала работы. Если на месте задача окажется сложнее, мастер сначала скажет вам и только потом возьмётся. Без «ой, тут ещё вот это» в конце.</p>
+      <p>Выезд бесплатный, если мастер делает работу. Только посмотреть и посоветовать — 500 ₽.</p>
+      <span class="hand" aria-hidden="true">Накопилось много мелочей? В один приезд выйдет дешевле</span>
+    </div>
+    <div class="price-box" id="price" hidden>
+    <div class="receipt">
+      <h3>Электрика</h3>
+      <ul>
+        <li><span>Заменить розетку или выключатель</span><i></i><b>от 600 ₽</b></li>
+        <li><span>Повесить люстру или светильник</span><i></i><b>от 800 ₽</b></li>
+      </ul>
+      <h3>Сантехника</h3>
+      <ul>
+        <li><span>Заменить прокладки в кране</span><i></i><b>от 500 ₽</b></li>
+        <li><span>Устранить протечку</span><i></i><b>от 1 000 ₽</b></li>
+        <li><span>Заменить смеситель</span><i></i><b>от 1 500 ₽</b></li>
+      </ul>
+      <h3>Техника</h3>
+      <ul>
+        <li><span>Подключить стиральную или сушильную машину</span><i></i><b>от 1 200 ₽</b></li>
+        <li><span>Подключить посудомоечную машину</span><i></i><b>от 1 500 ₽</b></li>
+      </ul>
+      <h3>Замки</h3>
+      <ul>
+        <li><span>Вскрыть или заменить замок</span><i></i><b>от 1 200 ₽</b></li>
+      </ul>
+      <h3>Мебель и стены</h3>
+      <ul>
+        <li><span>Повесить полку, картину или зеркало</span><i></i><b>от 500 ₽</b></li>
+        <li><span>Повесить карниз или телевизор</span><i></i><b>от 800 ₽</b></li>
+        <li><span>Собрать мебель</span><i></i><b>от 1 000 ₽</b></li>
+      </ul>
+      <div class="total">
+        <span class="hand">Итого: без сюрпризов</span>      </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<section class="list island island--sky" id="spisok">
+  <div class="wrap">
+    <div class="intro">
+      <h2>Тот самый список «когда-нибудь»</h2>
+      <p>Он есть у всех: на холодильнике, в заметках или в голове. Пришлите его нам, и мастер сделает всё за один приезд.</p>
+      <a class="btn btn--sun" href="https://wa.me/79000000000?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%92%D0%BE%D1%82%20%D0%BC%D0%BE%D0%B9%20%D1%81%D0%BF%D0%B8%D1%81%D0%BE%D0%BA%3A%20" target="_blank" rel="noopener">Отправить свой список</a>
+    </div>
+    <div class="memo">
+      <h3>Сделать на выходных:</h3>
+      <ul>
+        <li>Повесить полку в коридоре</li>
+        <li>Лампочка в ванной (нужна стремянка)</li>
+        <li>Дверца шкафа скрипит с прошлого года</li>
+        <li>Телевизор всё ещё на табуретке</li>
+        <li class="no">Убедить кота, что пылесос не враг <small>(не входит в услуги)</small></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap guar">
+    <div><b>Цена не растёт</b><p>Что назвали, за то и платите. Всё новое только с вашего согласия.</p></div>
+    <div><b>Гарантия 6 месяцев</b><p>Сломалось по нашей вине? Переделаем бесплатно.</p></div>
+    <div><b>Чек и договор</b><p>Чек всем, договор для компаний.</p></div>
+    <div><b>Чисто</b><p>Бахилы, коврик под инструмент, мусор уезжает с мастером.</p></div>
+  </div>
+</section>
+
+<section class="faq island island--butter" id="voprosy">
+  <div class="wrap">
+    <div class="faq-head"><h2>Вы спрашиваете, мы отвечаем</h2></div>
+    <div class="qa">
+      <details><summary>Сколько стоит выезд?</summary><p>Бесплатно, если мастер делает работу. Если нужно только посмотреть и посоветовать, 500 ₽. Никаких «за вызов», «за подъём» и «за то, что пришёл».</p></details>
+      <details><summary>Как быстро приедете?</summary><p>Обычно за 1–2 часа или в удобный вам день и час. Если течёт, искрит или не открывается дверь, звоните сразу: приедем как можно скорее, в том числе ночью.</p></details>
+      <details><summary>А если я не знаю, что сломалось?</summary><p>Это нормально. Пришлите фото или видео в мессенджер: по ним мастер чаще всего понимает, в чём дело и сколько это будет стоить.</p></details>
+      <details><summary>Можно позвать на несколько мелочей сразу?</summary><p>Даже нужно. Пришлите список, мастер сделает всё за один приезд, и это выйдет дешевле, чем по отдельности.</p></details>
+      <details><summary>Кто покупает материалы?</summary><p>Как вам удобнее. Можете купить сами, подскажем, что именно. Или поручите мастеру: привезёт всё нужное и покажет чеки.</p></details>
+      <details><summary>За что вы не берётесь?</summary><p>Газ, перепланировки и всё, где нужны специальные допуски. Тут честно скажем «не наше» и подскажем, к кому обратиться.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="final island island--peach" id="zapis">
+  <div class="wrap">
+    <div>
+      <h2>Пусть кот спит спокойно</h2>
+      <p class="sub">Позвоните или напишите, назовём цену и время. Чем раньше, тем меньше лужа.</p>
+      <a class="phone" href="tel:+79000000000">+7 (900) 000-00-00</a>
+      <div class="alt">
+        <a class="btn btn--sun" href="tel:+79000000000">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>
+          Позвонить
+        </a>
+        <a class="btn btn--white" href="https://wa.me/79000000000" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="btn btn--white" href="https://t.me/+79000000000" target="_blank" rel="noopener">Telegram</a>
+      </div>
+      <small>Течёт, искрит или заперлась дверь? Выезжаем на аварии круглосуточно. Всё остальное в удобное вам время, договоримся.</small>
+    </div>
+    <figure>
+      <img src="assets/final-kot.webp" alt="Пушистый серый кот с шерстью дыбом, за ним искрит розетка" width="720" height="720">
+      <figcaption class="hand">Этот кот пока не спит</figcaption>
+    </figure>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#"><img src="assets/logo.svg" alt="" width="36" height="36">Муж на час</a>
+    <span>Электрика, сантехника, сборка мебели, замки и мелкий ремонт по всему городу</span>
+    <span class="hand">Ни один кот при ремонте не пострадал</span>
+    <a class="maker" href="https://www.facebook.com/profile.php?id=61596700586467" target="_blank" rel="noopener" title="Мастер в Facebook">
+      <img src="assets/master-m.webp" alt="" width="40" height="40"><span>Сделано в <b>«Мастер»</b></span>
+    </a>
+  </div>
+</footer>
+
+<a class="catcall" id="catcall" href="tel:+79000000000" aria-label="Позвонить мастеру: +7 (900) 000-00-00">
+  <svg viewBox="0 0 112 120" aria-hidden="true">
+    <path d="M20 44 14 6l30 20z" fill="#FFC93C" stroke="#2F4858" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M92 44 98 6 68 26z" fill="#FFC93C" stroke="#2F4858" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M22 36 19 16l13 9zM90 36l3-20-13 9z" fill="#E8553A"/>
+    <circle cx="56" cy="68" r="48" fill="#FFC93C" stroke="#2F4858" stroke-width="4"/>
+    <g fill="#2F4858"><circle cx="56" cy="27" r="3"/><circle cx="56" cy="109" r="3"/>
+      <circle cx="76.5" cy="32.5" r="1.8"/><circle cx="91.5" cy="47.5" r="1.8"/><circle cx="91.5" cy="88.5" r="1.8"/><circle cx="76.5" cy="103.5" r="1.8"/>
+      <circle cx="35.5" cy="103.5" r="1.8"/><circle cx="20.5" cy="88.5" r="1.8"/><circle cx="20.5" cy="47.5" r="1.8"/><circle cx="35.5" cy="32.5" r="1.8"/></g>
+    <g stroke="#2F4858" stroke-width="2.2" stroke-linecap="round"><path d="M4 84l18 1M5 93l17-4M108 84l-18 1M107 93l-17-4"/></g>
+    <text x="56" y="68" text-anchor="middle" font-family="Caveat, cursive" font-weight="700" font-size="24" fill="#2F4858">Позвони</text>
+    <g transform="translate(48 77)" fill="#E8553A"><path d="M3.5 2.2a1.5 1.5 0 0 1 1.9-.3l2.3 1.6c.6.4.8 1.2.4 1.9l-.9 1.6a9 9 0 0 0 4.3 4.3l1.6-.9c.7-.4 1.5-.2 1.9.4l1.6 2.3c.4.6.3 1.4-.3 1.9l-1.5 1.2c-.8.6-1.9.8-2.8.4A16 16 0 0 1 1.6 8.2C1.2 7.3 1.4 6.2 2 5.4z"/></g>
+  </svg>
+</a>
+
+<nav class="dock" aria-label="Связаться">
+  <a class="btn btn--sun" href="tel:+79000000000">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>
+    Позвонить
+  </a>
+  <a class="btn btn--white" href="https://wa.me/79000000000" target="_blank" rel="noopener">Написать</a>
+</nav>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* шапка: тонкая линия при прокрутке */
+  var top = document.querySelector('.top');
+  addEventListener('scroll', function(){ top.classList.toggle('scrolled', scrollY > 8); }, {passive:true});
+
+  /* первая строка заголовка меняется: разные беды, один кот */
+  var rot = document.getElementById('rot');
+  var words = ['Кран течёт?','Розетка искрит?','Стиралка сбежала?','Замок заело?','Полка падает?'];
+  var i = 0;
+  if (!reduce) setInterval(function(){
+    i = (i + 1) % words.length;
+    rot.classList.remove('swap'); void rot.offsetWidth;
+    rot.textContent = words[i]; rot.classList.add('swap');
+  }, 2600);
+
+  /* лента: пары «было → стало» */
+  var ribbon = document.getElementById('ribbon');
+  var pairs = [].slice.call(ribbon.querySelectorAll('.pair'));
+  pairs.forEach(function(p){
+    var after = p.querySelector('.after');
+    if (!after) return;
+    p.classList.add('has-after');
+    var frame = p.querySelector('.frame');
+    var shine = document.createElement('span'); shine.className = 'shine'; frame.appendChild(shine);
+    var thumb = document.createElement('span'); thumb.className = 'thumb';
+    thumb.innerHTML = '<img src="' + p.querySelector('.before').getAttribute('src') + '" alt="">';
+    p.querySelector('.shot').appendChild(thumb);
+    var t = document.createElement('div'); t.className = 'toggle'; t.setAttribute('role','group'); t.setAttribute('aria-label','Показать');
+    t.innerHTML = '<button type="button" data-v="before">Было</button><button type="button" data-v="after">Стало</button>';
+    p.querySelector('.shot').appendChild(t);
+    t.addEventListener('click', function(e){
+      var b = e.target.closest('button'); if (!b) return;
+      p.classList.toggle('is-after', b.dataset.v === 'after');
+      p.dataset.manual = '1';
+    });
+  });
+  var withAfter = pairs.filter(function(p){ return p.classList.contains('has-after'); });
+  if (reduce) withAfter.forEach(function(p){ p.classList.add('is-after'); });
+
+  /* кот-часы «Позвони»: едет вниз по краю экрана вместе с прокруткой,
+     пока едет — «бежит» (покачивается), а когда стоит — иногда звенит */
+  var cat = document.getElementById('catcall'), runT;
+  function placeCat(){
+    var h = cat.offsetHeight, topY = 92, bottomY = innerHeight - h - 24;
+    var max = document.documentElement.scrollHeight - innerHeight;
+    var p = max > 0 ? Math.min(1, scrollY / max) : 0;
+    cat.style.setProperty('--y', Math.round(topY + p * Math.max(0, bottomY - topY)) + 'px');
+  }
+  addEventListener('scroll', function(){
+    placeCat();
+    if (reduce) return;
+    cat.classList.add('run'); clearTimeout(runT);
+    runT = setTimeout(function(){ cat.classList.remove('run'); }, 450);
+  }, {passive:true});
+  addEventListener('resize', placeCat); placeCat();
+  if (!reduce) setInterval(function(){
+    if (cat.classList.contains('run')) return;
+    cat.classList.remove('ring'); void cat.offsetWidth; cat.classList.add('ring');
+  }, 7000);
+
+  /* прайс: спрятан, открывается кнопкой. Ссылки «Цены» / «Все цены» тоже его открывают */
+  var priceBtn = document.getElementById('price-btn'), priceBox = document.getElementById('price');
+  function setPrice(open){
+    priceBox.hidden = !open;
+    priceBtn.setAttribute('aria-expanded', open);
+    priceBtn.querySelector('span').textContent = open ? 'Скрыть прайс' : 'Открыть прайс';
+  }
+  priceBtn.addEventListener('click', function(){
+    var open = priceBox.hidden;
+    setPrice(open);
+    if (open) priceBox.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'});
+  });
+  document.querySelectorAll('a[href="#ceny"]').forEach(function(a){
+    a.addEventListener('click', function(){ setPrice(true); });
+  });
+
+  /* стрелки и счётчик: листаем сразу страницу (3 карточки на компьютере) */
+  var prev = document.querySelector('.arrows [data-dir="-1"]'), next = document.querySelector('.arrows [data-dir="1"]');
+  var count = document.getElementById('count');
+  function step(){ return pairs[0].getBoundingClientRect().width + 28; }
+  function perView(){
+    var pad = parseFloat(getComputedStyle(ribbon).paddingLeft) || 0;
+    return Math.max(1, Math.round((ribbon.clientWidth - 2 * pad + 28) / step()));
+  }
+  function maxScroll(){ return ribbon.scrollWidth - ribbon.clientWidth; }
+  function page(){ return Math.round(ribbon.scrollLeft / (step() * perView())); }
+  function goPage(n){
+    var left = Math.min(maxScroll(), n * perView() * step());
+    ribbon.scrollTo({left: Math.max(0, left), behavior: reduce ? 'auto' : 'smooth'});
+  }
+  document.querySelectorAll('.arrows button').forEach(function(b){
+    b.addEventListener('click', function(){
+      var atEnd = ribbon.scrollLeft >= maxScroll() - 4;
+      if (+b.dataset.dir > 0 && atEnd) goPage(0); else goPage(page() + +b.dataset.dir);
+      restart();
+    });
+  });
+  function sync(){
+    prev.disabled = ribbon.scrollLeft < 4;
+    var n = Math.min(pairs.length, Math.round(ribbon.scrollLeft / step()) + 1);
+    count.textContent = n + ' / ' + pairs.length;
+  }
+  ribbon.addEventListener('scroll', sync, {passive:true}); addEventListener('resize', sync); sync();
+
+  /* лента в движении: на экране 3 карточки, они вместе показывают «было»,
+     через секунду протираются в «стало», ещё через 2,5 секунды лента
+     перелистывается на следующие 3. После последних — снова к началу.
+     Пауза, когда на ленту навели мышь, коснулись пальцем или ушли с неё. */
+  var timer, restart = function(){};
+  if (!reduce) {
+    var paused = false, onScreen = false;
+    ribbon.addEventListener('mouseenter', function(){ paused = true; });
+    ribbon.addEventListener('mouseleave', function(){ paused = false; });
+    ribbon.addEventListener('focusin', function(){ paused = true; });
+    ribbon.addEventListener('focusout', function(){ paused = false; });
+    var touchTimer;
+    ribbon.addEventListener('touchstart', function(){ paused = true; clearTimeout(touchTimer); }, {passive:true});
+    ribbon.addEventListener('touchend', function(){ touchTimer = setTimeout(function(){ paused = false; }, 5000); }, {passive:true});
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function(es){ onScreen = es[0].isIntersecting; }, {threshold:.3}).observe(ribbon);
+    } else onScreen = true;
+
+    function visible(p){
+      var r = p.getBoundingClientRect(), R = ribbon.getBoundingClientRect();
+      return r.left >= R.left - 10 && r.right <= R.right + 10;
+    }
+    function blocked(){ return paused || !onScreen || document.hidden; }
+    function showAfter(){
+      if (blocked()) { timer = setTimeout(showAfter, 400); return; }
+      withAfter.forEach(function(p){ if (!p.dataset.manual && visible(p)) p.classList.add('is-after'); });
+      timer = setTimeout(turn, 2500);
+    }
+    function turn(){
+      if (blocked()) { timer = setTimeout(turn, 400); return; }
+      if (ribbon.scrollLeft >= maxScroll() - 4) {
+        withAfter.forEach(function(p){ if (!p.dataset.manual) p.classList.remove('is-after'); });
+        goPage(0);
+      } else goPage(page() + 1);
+      timer = setTimeout(showAfter, 1300);
+    }
+    restart = function(){ clearTimeout(timer); timer = setTimeout(showAfter, 1300); };
+    timer = setTimeout(showAfter, 1000);
+  }
+})();
+</script>
+</body>
+</html>
